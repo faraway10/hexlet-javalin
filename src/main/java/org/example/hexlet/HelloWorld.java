@@ -8,8 +8,11 @@ public class HelloWorld {
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
         });
-        app.get("/users", ctx -> ctx.result("Answer for method GET on address /users"));
-        app.post("/users", ctx -> ctx.result("Answer for method POST on address /users"));
+        app.get("/hello", context -> context.result(
+                "Hello, "
+                + context.queryParamAsClass("name", String.class).getOrDefault("World")
+                + "!"));
+
         app.start(7070); // Стартуем веб-сервер
     }
 }
