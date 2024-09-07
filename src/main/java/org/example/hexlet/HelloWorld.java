@@ -4,10 +4,9 @@ import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import static io.javalin.rendering.template.TemplateUtil.model;
 
-import org.example.hexlet.model.Course;
 import org.example.hexlet.dto.courses.CoursePage;
 import org.example.hexlet.dto.courses.CoursesPage;
-import java.util.List;
+import org.example.hexlet.model.CourseDAO;
 
 public class HelloWorld {
     public static void main(String[] args) {
@@ -18,16 +17,24 @@ public class HelloWorld {
 
         app.get("/courses/{id}", ctx -> {
             var id = ctx.pathParam("id");
-            var course = new Course("course " + id, "description " + id); // db fetch simulation
+            var course = CourseDAO.fetchCourses()
+                    .stream()
+                    .filter(c -> c.getId() == Long.parseLong(id))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Cannot find course with id = " + id)); // db fetch simulation
             var page = new CoursePage(course);
             ctx.render("courses/course.jte", model("page", page));
         });
 
         app.get("/courses", ctx -> {
-            var courses = List.of( // db fetch simulation
-                    new Course(1L,"Javalin", "Course about Javalin"),
-                    new Course(2L,"Spring Boot", "Course about Spring Boot")
-            );
+            var term = ctx.queryParam("term");
+
+            var courses = CourseDAO.fetchCourses(); // db fetch simulation
+
+            if (term != null) {
+                courses = courses.stream().filter(course -> course.getName().toLowerCase().contains(term.toLowerCase())).toList();
+            }
+
             var header = "Programming courses";
             var page = new CoursesPage(courses, header);
             ctx.render("courses/index.jte", model("page", page));

@@ -10,6 +10,10 @@
 </head>
 <body>
 <h1>${page.getHeader()}</h1>
+<form action="/courses" method="get">
+    <input type="search" required name="term">
+    <input type="submit" value="Search">
+</form>
 @if(page.getCourses().isEmpty())
     <p>Still no courses</p>
 @else
