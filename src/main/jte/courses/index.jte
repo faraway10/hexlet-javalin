@@ -14,6 +14,8 @@
     <input type="search" required name="term">
     <input type="submit" value="Search">
 </form>
+<br>
+<a href="courses/build">Add Course</a>
 @if(page.getCourses().isEmpty())
     <p>Still no courses</p>
 @else
