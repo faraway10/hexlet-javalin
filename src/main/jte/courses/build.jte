@@ -15,13 +15,13 @@
     <div>
         <label>
             Course Name
-            <input type="text" required name="name" />
+            <input type="text" required name="name" value="${page.getName()}"/>
         </label>
     </div>
     <div>
         <label>
             Course Description
-            <input type="text" required name="description" />
+            <input type="text" required name="description" value="${page.getDescription()}"/>
         </label>
     </div>
     <input type="submit" value="Add" />
