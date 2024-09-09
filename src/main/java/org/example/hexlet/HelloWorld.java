@@ -4,6 +4,8 @@ import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import static io.javalin.rendering.template.TemplateUtil.model;
 
+import io.javalin.validation.ValidationException;
+import org.example.hexlet.dto.courses.BuildCoursePage;
 import org.example.hexlet.dto.courses.CoursePage;
 import org.example.hexlet.dto.courses.CoursesPage;
 import org.example.hexlet.model.Course;
@@ -22,16 +24,30 @@ public class HelloWorld {
         });
 
         app.get("/courses/build", ctx -> {
-            ctx.render("courses/build.jte");
+            var page = new BuildCoursePage();
+            ctx.render("courses/build.jte", model("page", page));
         });
 
         app.post("/courses", ctx -> {
             var name = ctx.formParam("name");
             var description = ctx.formParam("description");
+            try {
+                name = ctx.formParamAsClass("name", String.class)
+                        .check(value -> value.length() > 2, "Course name must be longer than 2 characters")
+                        .get();
 
-            var course = new Course(name, description);
-            CourseRepository.save(course);
-            ctx.redirect("/courses");
+                description = ctx.formParamAsClass("description", String.class)
+                        .check(value -> value.length() > 10, "Course description must be longer than 10 characters")
+                        .get();
+
+                var course = new Course(name, description);
+                CourseRepository.save(course);
+                ctx.redirect("/courses");
+            } catch (ValidationException e) {
+                var page = new BuildCoursePage(name, description, e.getErrors());
+                ctx.render("courses/build.jte", model("page", page));
+            }
+
         });
 
 
