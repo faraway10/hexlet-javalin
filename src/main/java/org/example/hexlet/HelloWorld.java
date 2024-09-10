@@ -23,12 +23,16 @@ public class HelloWorld {
             config.fileRenderer(new JavalinJte());
         });
 
-        app.get("/courses/build", ctx -> {
+        app.get("/", ctx -> {
+            ctx.redirect(NamedRoutes.coursesPath());
+        });
+
+        app.get(NamedRoutes.buildCoursePath(), ctx -> {
             var page = new BuildCoursePage();
             ctx.render("courses/build.jte", model("page", page));
         });
 
-        app.post("/courses", ctx -> {
+        app.post(NamedRoutes.coursesPath(), ctx -> {
             var name = ctx.formParam("name");
             var description = ctx.formParam("description");
             try {
@@ -42,7 +46,7 @@ public class HelloWorld {
 
                 var course = new Course(name, description);
                 CourseRepository.save(course);
-                ctx.redirect("/courses");
+                ctx.redirect(NamedRoutes.coursesPath());
             } catch (ValidationException e) {
                 var page = new BuildCoursePage(name, description, e.getErrors());
                 ctx.render("courses/build.jte", model("page", page));
@@ -51,7 +55,7 @@ public class HelloWorld {
         });
 
 
-        app.get("/courses/{id}", ctx -> {
+        app.get(NamedRoutes.coursePath("{id}"), ctx -> {
             var id = ctx.pathParam("id");
             var course = CourseRepository.getEntities()
                     .stream()
@@ -62,7 +66,7 @@ public class HelloWorld {
             ctx.render("courses/course.jte", model("page", page));
         });
 
-        app.get("/courses", ctx -> {
+        app.get(NamedRoutes.coursesPath(), ctx -> {
             var term = ctx.queryParam("term");
 
             var courses = CourseRepository.getEntities(); // db fetch simulation
