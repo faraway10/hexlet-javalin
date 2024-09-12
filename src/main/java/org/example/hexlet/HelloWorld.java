@@ -3,8 +3,11 @@ package org.example.hexlet;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import org.example.hexlet.controller.CoursesController;
+import org.example.hexlet.dto.MainPage;
 import org.example.hexlet.model.Course;
 import org.example.hexlet.repository.CourseRepository;
+
+import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class HelloWorld {
     public static void main(String[] args) {
@@ -18,7 +21,12 @@ public class HelloWorld {
             config.fileRenderer(new JavalinJte());
         });
 
-        app.get("/", ctx -> {ctx.redirect(NamedRoutes.coursesPath());});
+        app.get("/", ctx -> {
+            var visited = Boolean.valueOf(ctx.cookie("visited"));
+            var page = new MainPage(visited);
+            ctx.render("courses/index.jte", model("page", page));
+            ctx.cookie("visited", String.valueOf(true));
+        });
 
         app.get(NamedRoutes.buildCoursePath(), CoursesController::build);
         app.get(NamedRoutes.coursesPath(), CoursesController::index);

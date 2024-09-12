@@ -1,31 +1,21 @@
 @import org.example.hexlet.NamedRoutes
-@import org.example.hexlet.dto.courses.CoursesPage
-@param CoursesPage page
+@import org.example.hexlet.dto.MainPage
+@param MainPage page
 
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Hello Hexlet!</title>
 </head>
 <body>
-<h1>${page.getHeader()}</h1>
-<form action="${NamedRoutes.coursesPath()}" method="get">
-    <input type="search" required name="term">
-    <input type="submit" value="Search">
-</form>
-<br>
-<a href="${NamedRoutes.buildCoursePath()}">Add Course</a>
-@if(page.getCourses().isEmpty())
-    <p>Still no courses</p>
-@else
-    @for(var course : page.getCourses())
-        <div>
-            <h2><a href="${NamedRoutes.coursePath(course.getId())}">${course.getName()}</a></h2>
-            <p>${course.getDescription()}</p>
-        </div>
-    @endfor
-@endif
+<main>
+    <h1>Привет, Хекслет!</h1>
+    @if(!page.isVisited())
+        <p>Это сообщение показывается только один раз. Если вы хотите увидеть его снова, сотрите куки</p>
+    @endif
+    <a href="${NamedRoutes.coursesPath()}">Перейти к курсам</a>
+</main>
 </body>
 </html>

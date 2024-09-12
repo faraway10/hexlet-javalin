@@ -22,7 +22,7 @@ public class CoursesController {
         }
 
         var page = new CoursesPage(courses, "Programming courses");
-        ctx.render("courses/index.jte", model("page", page));
+        ctx.render("courses/courses.jte", model("page", page));
     }
 
     public static void show(Context ctx) {
