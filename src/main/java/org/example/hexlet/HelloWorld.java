@@ -3,6 +3,7 @@ package org.example.hexlet;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import org.example.hexlet.controller.CoursesController;
+import org.example.hexlet.controller.SessionsController;
 import org.example.hexlet.dto.MainPage;
 import org.example.hexlet.model.Course;
 import org.example.hexlet.repository.CourseRepository;
@@ -22,16 +23,18 @@ public class HelloWorld {
         });
 
         app.get("/", ctx -> {
-            var visited = Boolean.valueOf(ctx.cookie("visited"));
-            var page = new MainPage(visited);
-            ctx.render("courses/index.jte", model("page", page));
-            ctx.cookie("visited", String.valueOf(true));
+            var page = new MainPage(ctx.sessionAttribute("currentUser"));
+            ctx.render("index.jte", model("page", page));
         });
 
         app.get(NamedRoutes.buildCoursePath(), CoursesController::build);
         app.get(NamedRoutes.coursesPath(), CoursesController::index);
         app.get(NamedRoutes.coursesPath() + "/{id}", CoursesController::show);
         app.post(NamedRoutes.coursesPath(), CoursesController::create);
+
+        app.get(NamedRoutes.buildSessionPath(), SessionsController::build);
+        app.post(NamedRoutes.sessionsPath(), SessionsController::create);
+        app.delete(NamedRoutes.sessionsPath(), SessionsController::destroy);
 
         app.start(7070);
     }

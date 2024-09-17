@@ -12,10 +12,12 @@
 <body>
 <main>
     <h1>Привет, Хекслет!</h1>
-    @if(!page.isVisited())
-        <p>Это сообщение показывается только один раз. Если вы хотите увидеть его снова, сотрите куки</p>
+    @if(page.getCurrentUser() != null)
+        Добро пожаловать, ${page.getCurrentUser()}.
+        Чтобы разлогиниться, удалите куку JSESSIONID из браузера
+    @else
+        <a href="${NamedRoutes.buildSessionPath()}">Войти</a>
     @endif
-    <a href="${NamedRoutes.coursesPath()}">Перейти к курсам</a>
 </main>
 </body>
 </html>
